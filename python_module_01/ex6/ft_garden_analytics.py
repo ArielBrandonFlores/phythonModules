@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+
 class Plant:
     class Statistics:
         def __init__(self) -> None:
@@ -19,8 +21,7 @@ class Plant:
             print(f"[statistics for {name}]")
             print(
                 f"Stats: {self._grow_calls} grow, "
-                f"{self._age_calls} age, {self._show_calls} show",
-                end="",
+                f"{self._age_calls} age, {self._show_calls} show"
             )
 
     _name: str
@@ -33,7 +34,7 @@ class Plant:
         self._age = 0
         self.set_height(height)
         self.set_age(age)
-        self._stats = self.Statistics()
+        self._stats: Plant.Statistics = self.Statistics()
 
     def set_height(self, height: float) -> None:
         if height < 0:
@@ -104,7 +105,6 @@ class Flower(Plant):
 
 
 class Seed(Flower):
-
     _seeds: int
 
     def __init__(
@@ -116,6 +116,10 @@ class Seed(Flower):
     ) -> None:
         super().__init__(name, h, age, color)
         self._seeds = 0
+
+    def grow(self) -> None:
+        self.set_height(self._height + 30.0)
+        self._stats.increment_grow()
 
     def bloom(self) -> None:
         super().bloom()
@@ -137,10 +141,9 @@ class Tree(Plant):
 
         def display(self, name: str) -> None:
             super().display(name)
-            print(f" {self._shade_calls} shade")
+            print(f"{self._shade_calls} shade")
 
     _trunk_diameter: float
-    _stats: TreeStatistics
 
     def __init__(
         self,
@@ -151,10 +154,11 @@ class Tree(Plant):
     ) -> None:
         super().__init__(name, h, age)
         self._trunk_diameter = diam
-        self._stats: Tree.TreeStatistics = self.TreeStatistics()
+        self._stats = self.TreeStatistics()
 
     def produce_shade(self) -> None:
-        self._stats.increment_shade()
+        if isinstance(self._stats, Tree.TreeStatistics):
+            self._stats.increment_shade()
         h = round(self._height, 1)
         d = round(self._trunk_diameter, 1)
         print(
@@ -164,10 +168,7 @@ class Tree(Plant):
 
     def show(self) -> None:
         super().show()
-        print(
-            f"Trunk diameter: "
-            f"{round(self._trunk_diameter, 1)}cm"
-        )
+        print(f"Trunk diameter: {round(self._trunk_diameter, 1)}cm")
 
 
 def display_plant_stats(plant: Plant) -> None:
@@ -176,7 +177,7 @@ def display_plant_stats(plant: Plant) -> None:
 
 if __name__ == "__main__":
     print("=== Garden statistics ===")
-    print("\n=== Check year-old")
+    print("=== Check year-old")
     print(
         f"Is 30 days more than a year? -> "
         f"{Plant.is_older_than_year(30)}"
@@ -197,8 +198,9 @@ if __name__ == "__main__":
     rose.show()
     display_plant_stats(rose)
 
-    print("\n\n=== Tree")
+    print("\n=== Tree")
     oak = Tree("Oak", 200.0, 365, 5.0)
+    oak.show()
     display_plant_stats(oak)
     print("[asking the oak to produce shade]")
     oak.produce_shade()
@@ -214,7 +216,7 @@ if __name__ == "__main__":
     sun.show()
     display_plant_stats(sun)
 
-    print("\n\n=== Anonymous")
+    print("\n=== Anonymous")
     anon = Plant.create_anonymous()
     anon.show()
     display_plant_stats(anon)

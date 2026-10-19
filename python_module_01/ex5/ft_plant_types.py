@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+
 class Plant:
     _name: str
     _height: float
@@ -30,8 +32,8 @@ class Plant:
         return self._age
 
     def show(self) -> None:
-        print(
-            f"{self._name}: {round(self._height, 1)}cm, {self._age} days")
+        h = round(self._height, 1)
+        print(f"{self._name}: {h}cm, {self._age} days old")
 
     def grow(self) -> None:
         self._height += 1.0
@@ -60,7 +62,7 @@ class Flower(Plant):
         if self._is_blooming:
             print(f"{self._name} is blooming beautifully!")
         else:
-            print(f"{self._name} has not bloommed yet!")
+            print(f"{self._name} has not bloomed yet")
 
 
 class Tree(Plant):
@@ -82,10 +84,7 @@ class Tree(Plant):
 
     def show(self) -> None:
         super().show()
-        print(
-            f"Trunk diameter: "
-            f"{round(self._trunk_diameter, 1)}cm"
-        )
+        print(f"Trunk diameter: {round(self._trunk_diameter, 1)}cm")
 
 
 class Vegetable(Plant):
@@ -100,16 +99,15 @@ class Vegetable(Plant):
         season: str,
     ) -> None:
         super().__init__(name, height, age)
-        self._harvest_season: str = season
-        self._nutritional_value: int = 0
+        self._harvest_season = season
+        self._nutritional_value = 0
 
     def grow(self) -> None:
-        super().grow()
+        self._height += 2.1
         self._nutritional_value += 1
 
     def age(self) -> None:
         super().age()
-        self._nutritional_value += 1
 
     def show(self) -> None:
         super().show()
@@ -118,12 +116,11 @@ class Vegetable(Plant):
 
 
 if __name__ == "__main__":
-    print("=== Garden Plant Types ===\n")
+    print("=== Garden Plant Types ===")
 
     print("=== Flower")
-    rose = Flower("Rose", 10.0, 10, "red")
-    rose.show()
     rose = Flower("Rose", 15.0, 10, "red")
+    rose.show()
     print("[asking the rose to bloom]")
     rose.bloom()
     rose.show()
@@ -135,7 +132,7 @@ if __name__ == "__main__":
     oak.produce_shade()
 
     print("\n=== Vegetable")
-    tomato = Vegetable("Tomato", 47.0, 30, "April")
+    tomato = Vegetable("Tomato", 5.0, 10, "April")
     tomato.show()
     print("[make tomato grow and age for 20 days]")
 

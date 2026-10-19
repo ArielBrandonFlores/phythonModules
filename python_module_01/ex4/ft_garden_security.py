@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+
 class Plant:
     def __init__(self, name: str, height: float, age: int) -> None:
         self._name: str = name
@@ -28,10 +30,8 @@ class Plant:
         return self._age
 
     def show(self) -> None:
-        print(
-            f"{self._name}: {round(self._height, 1)}cm, "
-            f"{self._age} days old"
-            )
+        h = round(self._height, 1)
+        print(f"{self._name}: {h}cm, {self._age} days old")
 
 
 if __name__ == "__main__":
@@ -41,12 +41,12 @@ if __name__ == "__main__":
     rose.show()
 
     rose.set_height(25.0)
+    print(f"Height updated: {int(rose.get_height())}cm")
     rose.set_age(30)
-    print("\nHeight updated: 25cm")
-    print("Age updated: 30 days\n")
+    print(f"Age updated: {rose.get_age()} days")
 
     rose.set_height(-5.0)
     rose.set_age(-1)
 
-    print("\nCurrent state: ", end="")
+    print("Current state: ", end="")
     rose.show()
