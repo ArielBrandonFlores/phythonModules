@@ -41,9 +41,9 @@ if __name__ == "__main__":
     rose.show()
 
     rose.set_height(25.0)
-    print(f"Height updated: {int(rose.get_height())}cm")
+    print(f"\nHeight updated: {int(rose.get_height())}cm")
     rose.set_age(30)
-    print(f"Age updated: {rose.get_age()} days")
+    print(f"Age updated: {rose.get_age()} days\n")
 
     rose.set_height(-5.0)
     rose.set_age(-1)
