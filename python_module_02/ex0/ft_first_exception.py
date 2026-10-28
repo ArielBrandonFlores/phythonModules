@@ -9,12 +9,15 @@ def test_temperature() -> None:
     print("=== Garden Temperature ===\n")
     temperature_val = "25"
     print(f"Input data is '{temperature_val}'")
-    print(f"Temperature is now {input_temperature(temperature_val)}°C\n")
+    try:
+        print(f"Temperature is now {input_temperature(temperature_val)}°C\n")
+    except ValueError as erro:
+        print(f"Caught input_temperature error: {erro}\n")
+
     temperature_inv = "abc"
     print(f"Input data is '{temperature_inv}'")
-
     try:
-        input_temperature(temperature_inv)
+        print(f"Temperature is now {input_temperature(temperature_inv)}°C\n")
     except ValueError as erro:
         print(f"Caught input_temperature error: {erro}\n")
 
