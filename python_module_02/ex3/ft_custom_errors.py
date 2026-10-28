@@ -1,54 +1,59 @@
 #!/usr/bin/env python3
 
+
 class GardenError(Exception):
     def __init__(self, message: str = "Unknown garden error") -> None:
         super().__init__(message)
+
 
 class PlantError(GardenError):
     def __init__(self, message: str = "Unknown plant error") -> None:
         super().__init__(message)
 
+
 class WaterError(GardenError):
     def __init__(self, message: str = "Unknown water error") -> None:
         super().__init__(message)
 
-def simulate_plant_issue() -> None:
-    raise PlantError("The tomato plant is wilting!")
 
-def simulate_water_issue() -> None:
-    raise WaterError("Not enough water in the tank!")
+def check_plant(is_wilting: bool) -> None:
+    if is_wilting:
+        raise PlantError("The tomato plant is wilting!")
+
+
+def check_water(tank_empty: bool) -> None:
+    if tank_empty:
+        raise WaterError("Not enough water in the tank!")
 
 def test_custom_errors() -> None:
-    print("Custom Garden Errors Demo")
+    print("=== Custom Garden Errors Demo ===")
 
-    print("Testing PlantError...")
+    print("\nTesting PlantError...")
     try:
-        simulate_plant_issue()
+        check_plant(True)
     except PlantError as erro:
         print(f"Caught PlantError: {erro}")
 
-    print("Testing WaterError...")
+    print("\nTesting WaterError...")
     try:
-        simulate_water_issue()
+        check_water(True)
     except WaterError as erro:
         print(f"Caught WaterError: {erro}")
 
-    # Nota: A string abaixo tem dois pontos finais ("..") para igualar o PDF
-    print("Testing catching all garden errors..")
+    print("\nTesting catching all garden errors..")
 
-    # Demonstração de captura genérica: PlantError é apanhado pelo seu "pai" GardenError
     try:
-        simulate_plant_issue()
+        check_plant(True)
     except GardenError as erro:
         print(f"Caught GardenError: {erro}")
 
-    # WaterError também é apanhado pelo "pai" GardenError
     try:
-        simulate_water_issue()
+        check_water(True)
     except GardenError as erro:
         print(f"Caught GardenError: {erro}")
 
-    print("All custom error types work correctly!")
+    print("\nAll custom error types work correctly!")
+
 
 if __name__ == "__main__":
     test_custom_errors()
