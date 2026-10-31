@@ -7,9 +7,9 @@ def garden_operations(operation_number: int) -> None:
     elif operation_number == 1:
         1 / 0
     elif operation_number == 2:
-        open("/non/existent/")
+        open("/non/existent/file")
     elif operation_number == 3:
-        "a" + 1
+        "a" + 42    # type: ignore
     else:
         pass
 
@@ -17,10 +17,10 @@ def garden_operations(operation_number: int) -> None:
 def test_error_types() -> None:
     print("=== Garden Error Types Demo ===")
 
-    for i in range(5):
-        print(f"Testing operation {i}...")
+    for op in range(5):
+        print(f"Testing operation {op}...")
         try:
-            garden_operations(i)
+            garden_operations(op)
             print("Operation completed successfully")
 
         except ValueError as erro:

@@ -13,35 +13,32 @@ def input_temperature(temp_str: str) -> int:
 def test_temperature() -> None:
     print("=== Garden Temperature Checker ===")
     temperature_val = "25"
-    print(f"\nInput data is '{temperature_val}'")
+    print(f"Input data is '{temperature_val}'")
     try:
-        temp = input_temperature(temperature_val)
-        print(f"Temperature is now {temp}°C\n")
+        print(f"Temperature is now {input_temperature(temperature_val)}°C\n")
     except ValueError as erro:
         print(f"Caught input_temperature error: {erro}\n")
 
     temperature_inv = "abc"
     print(f"Input data is '{temperature_inv}'")
     try:
-        input_temperature(temperature_inv)
+        print(f"Temperature is now {input_temperature(temperature_inv)}°C\n")
     except ValueError as erro:
         print(f"Caught input_temperature error: {erro}\n")
 
     temperature_hot = "100"
     print(f"Input data is '{temperature_hot}'")
     try:
-        input_temperature(temperature_hot)
+        print(f"Temperature is now {input_temperature(temperature_hot)}°C\n")
     except ValueError as erro:
         print(f"Caught input_temperature error: {erro}\n")
 
     temperature_cold = "-50"
     print(f"Input data is '{temperature_cold}'")
     try:
-        input_temperature(temperature_cold)
+        print(f"Temperature is now {input_temperature(temperature_cold)}°C\n")
     except ValueError as erro:
         print(f"Caught input_temperature error: {erro}\n")
-
-    print("All tests completed - program didn't crash!")
 
 
 if __name__ == "__main__":

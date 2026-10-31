@@ -25,9 +25,9 @@ def check_water(tank_empty: bool) -> None:
     if tank_empty:
         raise WaterError("Not enough water in the tank!")
 
+
 def test_custom_errors() -> None:
     print("=== Custom Garden Errors Demo ===")
-
     print("\nTesting PlantError...")
     try:
         check_plant(True)
@@ -41,12 +41,10 @@ def test_custom_errors() -> None:
         print(f"Caught WaterError: {erro}")
 
     print("\nTesting catching all garden errors..")
-
     try:
         check_plant(True)
     except GardenError as erro:
         print(f"Caught GardenError: {erro}")
-
     try:
         check_water(True)
     except GardenError as erro:
