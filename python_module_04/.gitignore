@@ -1,0 +1,31 @@
+# Ignore everything by default to ensure only required files are tracked
+*
+
+# Allow directory traversal
+!*/
+
+# Prevent caching and temporary files from being whitelisted
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.pytest_cache/
+*.swp
+*~
+.DS_Store
+
+# Keep .gitignore tracked
+!.gitignore
+
+# Whitelist strictly the files requested by the subject
+!ex0/
+!ex0/ft_ancient_text.py
+
+!ex1/
+!ex1/ft_archive_creation.py
+
+!ex2/
+!ex2/ft_stream_management.py
+
+!ex3/
+!ex3/ft_vault_security.py
+
