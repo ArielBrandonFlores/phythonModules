@@ -3,16 +3,15 @@ import sys
 
 
 def process_scores(args: list[str]) -> list[int]:
-    """Tenta converter os argumentos para inteiros, descartando os inválidos."""
     valid_scores: list[int] = []
-    
+
     for arg in args:
         try:
             score: int = int(arg)
             valid_scores.append(score)
         except ValueError:
             print(f"Invalid parameter: '{arg}'")
-            
+
     return valid_scores
 
 
@@ -36,20 +35,22 @@ def display_analytics(scores: list[int]) -> None:
 
 def main() -> None:
     print("=== Player Score Analytics ===")
-    
-    if len(sys.argv) <= 1:
-        print(f"No scores provided. Usage: python3 {sys.argv[0]} <score1> <score2>")
-        return
 
     raw_args: list[str] = sys.argv[1:]
-    valid_scores: list[int] = process_scores(raw_args)
+    if not raw_args:
+        print(
+            "No scores provided. "
+            f"Usage: python3 {sys.argv[0]} <score1> <score2> ...")
+        return
 
-    if len(valid_scores) == 0:
-        print(f"No scores provided. Usage: python3 {sys.argv[0]} <score1> <score2>")
+    valid_scores: list[int] = process_scores(raw_args)
+    if not valid_scores:
+        print(
+            "No scores provided. "
+            f"Usage: python3 {sys.argv[0]} <score1> <score2> ...")
         return
 
     display_analytics(valid_scores)
-
 
 
 if __name__ == "__main__":
