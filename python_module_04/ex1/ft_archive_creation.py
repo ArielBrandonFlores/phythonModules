@@ -3,7 +3,6 @@ import typing
 
 
 def transform_data(content: str) -> str:
-    """Append the '#' character to the end of each line."""
     lines: list[str] = content.splitlines()
     if not lines:
         return ""
@@ -12,7 +11,6 @@ def transform_data(content: str) -> str:
 
 
 def save_archive_data(filename: str, content: str) -> None:
-    """Save content to target file without using with statement."""
     print(f"Saving data to '{filename}'")
     out_file: typing.IO[str] | None = None
     try:
@@ -27,22 +25,21 @@ def save_archive_data(filename: str, content: str) -> None:
 
 
 def recover_and_preserve(filename: str) -> None:
-    """Read, display, transform, and optionally save archive data."""
     print("=== Cyber Archives Recovery & Preservation ===")
     print(f"Accessing file '{filename}'")
 
     file_obj: typing.IO[str] | None = None
-    raw_content: str | None = None
+    content: str | None = None
 
     try:
         file_obj = open(filename, "r")
-        raw_content = file_obj.read()
-        print("---")
-        if raw_content.endswith("\n"):
-            print(raw_content, end="")
+        content = file_obj.read()
+        print("---\n")
+        if content.endswith("\n"):
+            print(content, end="")
         else:
-            print(raw_content)
-        print("---")
+            print(content)
+        print("\n---")
     except OSError as error:
         print(f"Error opening file '{filename}': {error}")
         return
@@ -51,17 +48,17 @@ def recover_and_preserve(filename: str) -> None:
             file_obj.close()
             print(f"File '{filename}' closed.")
 
-    if raw_content is None:
+    if content is None:
         return
 
     print("\nTransform data:")
-    print("---")
-    transformed_content: str = transform_data(raw_content)
+    print("---\n")
+    transformed_content: str = transform_data(content)
     if transformed_content.endswith("\n"):
         print(transformed_content, end="")
     else:
         print(transformed_content)
-    print("---")
+    print("\n---")
 
     new_filename: str = input("Enter new file name (or empty): ")
     if not new_filename:
@@ -72,7 +69,6 @@ def recover_and_preserve(filename: str) -> None:
 
 
 def main() -> None:
-    """Validate arguments and start preservation pipeline."""
     if len(sys.argv) != 2:
         print("Usage: ft_archive_creation.py <file>")
         return
@@ -82,4 +78,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

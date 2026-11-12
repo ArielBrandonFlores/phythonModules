@@ -3,7 +3,6 @@ import typing
 
 
 def recover_ancient_text(filename: str) -> None:
-    """Read and display the contents of an archive file safely without with."""
     print("=== Cyber Archives Recovery ===")
     print(f"Accessing file '{filename}'")
 
@@ -11,12 +10,12 @@ def recover_ancient_text(filename: str) -> None:
     try:
         file_obj = open(filename, "r")
         content: str = file_obj.read()
-        print("---")
+        print("---\n")
         if content.endswith("\n"):
             print(content, end="")
         else:
             print(content)
-        print("---")
+        print("\n---")
     except OSError as error:
         print(f"Error opening file '{filename}': {error}")
     finally:
@@ -26,7 +25,6 @@ def recover_ancient_text(filename: str) -> None:
 
 
 def main() -> None:
-    """Validate command line arguments and execute text recovery."""
     if len(sys.argv) != 2:
         print("Usage: ft_ancient_text.py <file>")
         return
@@ -36,4 +34,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

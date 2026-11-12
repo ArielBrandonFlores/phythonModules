@@ -3,7 +3,6 @@ def secure_archive(
     action: str | int = "read",
     content: str | None = None,
 ) -> tuple[bool, str]:
-    """Provide safe access to a file using context manager (with)."""
     try:
         if action in ("read", 0):
             with open(filename, "r") as archive_file:
@@ -19,7 +18,6 @@ def secure_archive(
 
 
 def main() -> None:
-    """Demonstrate secure vault operations complying with subject examples."""
     print("=== Cyber Archives Security ===")
 
     print("Using 'secure_archive' to read from a nonexistent file:")
