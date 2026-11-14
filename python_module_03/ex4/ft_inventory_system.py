@@ -7,7 +7,7 @@ def parse_inventory(arguments: list[str]) -> dict[str, int]:
 
     for argument in arguments:
         parts: list[str] = argument.split(":")
-        if len(parts) != 2:
+        if len(parts) != 2 or not parts[0]:
             print(f"Error - invalid parameter '{argument}'")
             continue
 
