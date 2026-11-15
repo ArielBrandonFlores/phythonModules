@@ -1,84 +1,60 @@
-#!/usr/bin/env python3
-"""Stocking the reagents: check that the declared dependencies are present."""
-
 import importlib
 import os
 import sys
 
 
-REAGENTS: dict[str, str] = {
-    "pandas": "Data manipulation",
-    "numpy": "Numerical computation",
-}
-
-
-def load_reagent(name: str) -> str | None:
-    """Import a reagent by name and return its version, or None if missing."""
+def check_reagent(name: str, description: str) -> bool:
     try:
-        module: object = importlib.import_module(name)
+        module:str = importlib.import_module(name)
+        version:str = getattr(module, "__version__", "Unknown")
+        print(f"[OK] {name} ({version}) - {description}")
+        return True
     except ImportError:
-        return None
-    return str(getattr(module, "__version__", "unknown version"))
+        print(f"[MISSING] {name} - Not installed ({description})")
+        return False
 
 
-def describe_environment() -> None:
-    """Tell where the reagents are being looked for."""
-    if "pypoetry" in sys.prefix or os.environ.get("POETRY_ACTIVE"):
-        manager = "Poetry managed environment"
-    elif sys.prefix != sys.base_prefix:
-        manager = "virtual environment"
-    else:
-        manager = "global environment"
-    print(f"Environment: {manager} ({sys.prefix})")
+def display_install_instructions() -> None:
+    print("\nWARNING: Missing reagents detected!")
+    print("To stock the laboratory using pip, run:")
+    print("  pip install -r ex0/requirements.txt\n")
+    print("To stock the laboratory using Poetry, run:")
+    print("  poetry config virtualenvs.in-project true")
+    print("  poetry install")
+    print("  poetry run python ex0/loading.py")
 
 
-def explain_pip_vs_poetry() -> None:
-    """Print the difference between pip and Poetry."""
-    print("pip vs Poetry:")
-    print(" requirements.txt declares what to install; "
-          "pip resolves it at install time.")
-    print(" pyproject.toml declares the same constraints, "
-          "and Poetry pins the resolved")
-    print(" versions in poetry.lock so every install is identical.")
-
-
-def print_install_help(missing: list[str]) -> None:
-    """Print how to install the missing reagents with pip and Poetry."""
-    folder = os.path.relpath(os.path.dirname(os.path.abspath(__file__)))
-    requirements = os.path.join(folder, "requirements.txt")
-    names = " ".join(missing)
-    print("Missing reagents! Install them with one of the following:")
-    print(" With pip:")
-    print(f"   pip install -r {requirements}")
-    print(f"   (or: pip install {names})")
-    print(" With Poetry:")
-    print(f"   cd {folder} && poetry install")
-    print(f"   (or: poetry add {names})")
-    print("   then run: poetry run python loading.py")
+def display_pip_vs_poetry() -> None:
+    print("\npip vs Poetry:")
+    print("  requirements.txt declares what to install; pip resolves it at install time.")
+    print("  pyproject.toml declares the same constraints, and Poetry pins the resolved")
+    print("  versions in poetry.lock so every install is identical.")
+    print("\nAll reagents present and accounted for.")
 
 
 def main() -> None:
-    """Entry point."""
-    print("REAGENT STATUS: Loading reagents...")
-    describe_environment()
-    print()
+    print("REAGENT STATUS: Loading reagents...\n")
     print("Checking dependencies:")
-    missing: list[str] = []
-    for name, role in REAGENTS.items():
-        version = load_reagent(name)
-        if version is None:
-            missing.append(name)
-            print(f"[MISSING] {name} - {role} unavailable")
-        else:
-            print(f"[OK] {name} ({version}) - {role} ready")
-    print()
-    explain_pip_vs_poetry()
-    print()
-    if missing:
-        print_install_help(missing)
+
+    reagents: list[tuple[str, str]] = [
+        ("pandas", "Data manipulation ready"),
+        ("numpy", "Numerical computation ready"),
+    ]
+
+    all_present: bool = True
+    for name, description in reagents:
+        if not check_reagent(name, description):
+            all_present = False
+
+    if all_present:
+        display_pip_vs_poetry()
     else:
-        print("All reagents present and accounted for.")
+        display_install_instructions()
 
 
 if __name__ == "__main__":
     main()
+
+
+
+

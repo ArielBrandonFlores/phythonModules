@@ -1,34 +1,8 @@
-#!/usr/bin/env python3
-"""The Oracle: a configuration system based on environment variables."""
-
 import os
 import sys
 
 
-HERE: str = os.path.dirname(os.path.abspath(__file__))
-ENV_FILE: str = os.path.join(HERE, ".env")
-GITIGNORE_FILE: str = os.path.join(HERE, ".gitignore")
-
-CONFIG_KEYS: list[str] = [
-    "MATRIX_MODE",
-    "DATABASE_URL",
-    "API_KEY",
-    "LOG_LEVEL",
-    "ZION_ENDPOINT",
-]
-SECRET_KEYS: list[str] = ["DATABASE_URL", "API_KEY"]
-VALID_MODES: list[str] = ["development", "production"]
-DEFAULT_LOG_LEVEL: dict[str, str] = {
-    "development": "DEBUG",
-    "production": "WARNING",
-}
-
-
 def load_env_file() -> bool:
-    """Load ex1/.env without overriding variables already in the environment.
-
-    Returns True if a .env file was found and loaded.
-    """
     try:
         from dotenv import load_dotenv
     except ImportError:
@@ -59,14 +33,12 @@ def read_config() -> tuple[dict[str, str | None], dict[str, str]]:
 
 
 def mask(value: str, production: bool) -> str:
-    """Hide a secret, revealing a small hint only in development."""
     if production or len(value) <= 4:
         return "********"
     return value[:3] + "*" * (len(value) - 3)
 
 
 def describe_database(url: str | None, production: bool) -> str:
-    """Describe the database connection."""
     if url is None:
         return "Not configured (using in-memory fallback)"
     if production:
@@ -75,21 +47,18 @@ def describe_database(url: str | None, production: bool) -> str:
 
 
 def describe_api(key: str | None) -> str:
-    """Describe the API access."""
     if key is None:
         return "Unauthenticated (no API_KEY)"
     return "Authenticated"
 
 
 def describe_network(endpoint: str | None) -> str:
-    """Describe the remote network status."""
     if endpoint is None:
         return "Offline (no ZION_ENDPOINT)"
     return "Online"
 
 
 def source_has_secret(config: dict[str, str | None]) -> bool:
-    """Check whether a configured secret is written in this very file."""
     try:
         with open(os.path.abspath(__file__), "r") as source_file:
             source = source_file.read()
@@ -103,7 +72,6 @@ def source_has_secret(config: dict[str, str | None]) -> bool:
 
 
 def env_file_ignored() -> bool:
-    """Check that .env is listed in ex1/.gitignore."""
     try:
         with open(GITIGNORE_FILE, "r") as gitignore:
             lines = [line.strip() for line in gitignore]
@@ -114,7 +82,6 @@ def env_file_ignored() -> bool:
 
 def security_check(config: dict[str, str | None],
                    sources: dict[str, str]) -> None:
-    """Print the configuration security report."""
     print("Configuration security check:")
     if source_has_secret(config):
         print("[WARNING] A secret is hardcoded in the source code!")

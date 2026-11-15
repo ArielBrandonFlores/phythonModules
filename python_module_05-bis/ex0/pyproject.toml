@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "sealed-laboratory"
 version = "0.1.0"
-description = "The Codex - Exercise 0: the sealed laboratory and its reagents"
-authors = ["Alchemist Apprentice <apprentice@42.fr>"]
-package-mode = false
+description = "Alchemist laboratory reagents configuration"
+authors = ["Apprentice Alchemist"]
+package-mode=false
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-pandas = ">=2.1.0"
-numpy = ">=1.25.0"
+python = ">=3.10,<3.15"
+pandas = ">=2.2.3"
+numpy = ">=2.1.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
