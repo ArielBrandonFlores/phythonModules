@@ -1,0 +1,12 @@
+# Secrets: the real configuration must never reach version control
+.env
+
+# Virtual environments
+lab_env/
+.venv/
+venv/
+
+# Python caches
+__pycache__/
+*.pyc
+.mypy_cache/
