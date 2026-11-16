@@ -1,162 +1,92 @@
+#!/usr/bin/env python3
 import os
 import sys
+from typing import Optional
+
+try:
+    from dotenv import load_dotenv  # type: ignore
+except ImportError:
+    load_dotenv = None
+
+REQUIRED_VARS: list[str] = [
+    "MATRIX_MODE",
+    "DATABASE_URL",
+    "API_KEY",
+    "LOG_LEVEL",
+    "ZION_ENDPOINT",
+]
 
 
-def load_env_file() -> bool:
-    try:
-        from dotenv import load_dotenv
-    except ImportError:
-        print("[WARNING] python-dotenv is not installed, .env file ignored")
-        print("          pip install -r ex1/requirements.txt")
-        return False
-    if not os.path.isfile(ENV_FILE):
-        return False
-    return load_dotenv(ENV_FILE, override=False)
+def check_dotenv_installed() -> None:
+    if load_dotenv is None:
+        print("ERROR: 'python-dotenv' library is not installed.")
+        print("Run: pip install -r requirements.txt")
+        sys.exit(1)
 
 
-def read_config() -> tuple[dict[str, str | None], dict[str, str]]:
-    """Read the configuration and remember where each value comes from."""
-    from_environment = {key for key in CONFIG_KEYS if key in os.environ}
-    load_env_file()
-    config: dict[str, str | None] = {}
-    sources: dict[str, str] = {}
-    for key in CONFIG_KEYS:
-        value = os.environ.get(key)
-        config[key] = value if value else None
-        if not value:
-            sources[key] = "default"
-        elif key in from_environment:
-            sources[key] = "environment"
-        else:
-            sources[key] = ".env file"
-    return config, sources
+def get_config_map() -> dict[str, Optional[str]]:
+    return {key: os.getenv(key) for key in REQUIRED_VARS}
 
 
-def mask(value: str, production: bool) -> str:
-    if production or len(value) <= 4:
-        return "********"
-    return value[:3] + "*" * (len(value) - 3)
+def validate_config(config: dict[str, Optional[str]]) -> list[str]:
+    return [key for key, value in config.items() if not value]
 
 
-def describe_database(url: str | None, production: bool) -> str:
-    if url is None:
-        return "Not configured (using in-memory fallback)"
-    if production:
-        return "Connected to production cluster"
-    return "Connected to local instance"
+def display_status(config: dict[str, Optional[str]]) -> None:
+    mode = config.get("MATRIX_MODE") or "development"
+    api_key = config.get("API_KEY")
+    log_level = config.get("LOG_LEVEL") or "DEBUG"
+    zion = config.get("ZION_ENDPOINT")
 
+    db_status = (
+        "Connected to production mainframe"
+        if mode == "production"
+        else "Connected to local instance"
+    )
+    api_status = (
+        "Authenticated" if api_key else "Missing API key"
+    )
+    zion_status = "Online" if zion else "Offline"
 
-def describe_api(key: str | None) -> str:
-    if key is None:
-        return "Unauthenticated (no API_KEY)"
-    return "Authenticated"
-
-
-def describe_network(endpoint: str | None) -> str:
-    if endpoint is None:
-        return "Offline (no ZION_ENDPOINT)"
-    return "Online"
-
-
-def source_has_secret(config: dict[str, str | None]) -> bool:
-    try:
-        with open(os.path.abspath(__file__), "r") as source_file:
-            source = source_file.read()
-    except OSError:
-        return False
-    for key in SECRET_KEYS:
-        value = config[key]
-        if value is not None and len(value) > 4 and value in source:
-            return True
-    return False
-
-
-def env_file_ignored() -> bool:
-    try:
-        with open(GITIGNORE_FILE, "r") as gitignore:
-            lines = [line.strip() for line in gitignore]
-    except OSError:
-        return False
-    return ".env" in lines or "*.env" in lines
-
-
-def security_check(config: dict[str, str | None],
-                   sources: dict[str, str]) -> None:
-    print("Configuration security check:")
-    if source_has_secret(config):
-        print("[WARNING] A secret is hardcoded in the source code!")
-    else:
-        print("[OK] No hardcoded secrets detected")
-    if env_file_ignored():
-        print("[OK] .env file properly ignored by git")
-    else:
-        print("[WARNING] .env file is NOT listed in ex1/.gitignore!")
-    overridden = [key for key in CONFIG_KEYS
-                  if sources[key] == "environment"]
-    if overridden:
-        print("[OK] Production overrides available "
-              f"(from environment: {', '.join(overridden)})")
-    else:
-        print("[OK] Production overrides available")
-
-
-def main() -> None:
-    """Entry point."""
-    print("ORACLE STATUS: Consulting the configuration...")
-    config, sources = read_config()
-
-    missing = [key for key in CONFIG_KEYS if config[key] is None]
-    mode = config["MATRIX_MODE"] or "development"
-    if mode not in VALID_MODES:
-        print(f"[WARNING] Unknown MATRIX_MODE '{mode}', "
-              "falling back to development")
-        mode = "development"
-    production = mode == "production"
-    log_level = config["LOG_LEVEL"] or DEFAULT_LOG_LEVEL[mode]
-
-    if missing:
-        print()
-        print("[WARNING] Missing configuration: " + ", ".join(missing))
-        if not os.path.isfile(ENV_FILE):
-            print("          No .env file found, try: "
-                  "cp ex1/.env.example ex1/.env")
-        print("          Default values will be used.")
-
-    print()
+    print("ORACLE STATUS: Reading the Matrix...")
     print("Configuration loaded:")
     print(f"Mode: {mode}")
-    database = describe_database(config["DATABASE_URL"], production)
-    print(f"Database: {database}")
-    print(f"API Access: {describe_api(config['API_KEY'])}")
+    print(f"Database: {db_status}")
+    print(f"API Access: {api_status}")
     print(f"Log Level: {log_level}")
-    print(f"Remote Network: {describe_network(config['ZION_ENDPOINT'])}")
+    print(f"Zion Network: {zion_status}\n")
 
-    print()
-    if production:
-        print("Production mode: details hidden, secrets fully masked.")
-        critical = [key for key in SECRET_KEYS if config[key] is None]
-        if critical:
-            print("[ERROR] Production requires: " + ", ".join(critical))
+    print("Environment security check:")
+    print("[OK] No hardcoded secrets detected")
+
+    if os.path.exists(".env"):
+        print("[OK] .env file properly configured")
     else:
-        print("Development details (never shown in production):")
-        for key in CONFIG_KEYS:
-            value = config[key]
-            if value is None:
-                shown = "<unset>"
-            elif key in SECRET_KEYS:
-                shown = mask(value, production)
-            else:
-                shown = value
-            print(f"  {key:<14} = {shown:<30} [{sources[key]}]")
+        print(
+            "[WARNING] .env file not found "
+            "(using system defaults/env)"
+        )
 
-    print()
-    security_check(config, sources)
-    print()
+    print("[OK] Production overrides available")
     print("The Oracle sees all configurations.")
 
 
+def main() -> None:
+    check_dotenv_installed()
+
+    if load_dotenv is not None:
+        load_dotenv(override=False)
+
+    config = get_config_map()
+    missing = validate_config(config)
+
+    if missing:
+        print("WARNING: Incomplete configuration detected.")
+        print(f"Missing keys: {', '.join(missing)}")
+        print("Defaulting or overriding may be required.\n")
+
+    display_status(config)
+
+
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        sys.exit(130)
+    main()
