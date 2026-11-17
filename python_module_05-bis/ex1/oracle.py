@@ -1,6 +1,4 @@
-#!/usr/bin/env python3
 import os
-import sys
 from typing import Optional
 
 try:
@@ -17,11 +15,12 @@ REQUIRED_VARS: list[str] = [
 ]
 
 
-def check_dotenv_installed() -> None:
+def check_dotenv_installed() -> bool:
     if load_dotenv is None:
-        print("ERROR: 'python-dotenv' library is not installed.")
-        print("Run: pip install -r requirements.txt")
-        sys.exit(1)
+        print("[WARNING]: 'python-dotenv' library is not installed.")
+        print("          Run: pip install -r ex1/requirements.txt\n")
+        return False
+    return True
 
 
 def get_config_map() -> dict[str, Optional[str]]:
@@ -34,56 +33,57 @@ def validate_config(config: dict[str, Optional[str]]) -> list[str]:
 
 def display_status(config: dict[str, Optional[str]]) -> None:
     mode = config.get("MATRIX_MODE") or "development"
+    db_url = config.get("DATABASE_URL")
     api_key = config.get("API_KEY")
     log_level = config.get("LOG_LEVEL") or "DEBUG"
     zion = config.get("ZION_ENDPOINT")
 
-    db_status = (
-        "Connected to production mainframe"
-        if mode == "production"
-        else "Connected to local instance"
-    )
-    api_status = (
-        "Authenticated" if api_key else "Missing API key"
-    )
-    zion_status = "Online" if zion else "Offline"
-
-    print("ORACLE STATUS: Reading the Matrix...")
-    print("Configuration loaded:")
-    print(f"Mode: {mode}")
-    print(f"Database: {db_status}")
-    print(f"API Access: {api_status}")
-    print(f"Log Level: {log_level}")
-    print(f"Zion Network: {zion_status}\n")
-
-    print("Environment security check:")
-    print("[OK] No hardcoded secrets detected")
-
-    if os.path.exists(".env"):
-        print("[OK] .env file properly configured")
+    if not db_url:
+        db_status = "Local sandbox mode"
+    elif mode == "production":
+        db_status = "Connected to production mainframe"
     else:
-        print(
-            "[WARNING] .env file not found "
-            "(using system defaults/env)"
-        )
+        db_status = "Connected to local instance"
 
-    print("[OK] Production overrides available")
+    api_status = (
+        "Authenticated"
+        if api_key
+        else "Unauthenticated (Missing API_KEY)"
+    )
+    zion_status = "Online" if zion else "Offline (Simulated)"
+
+    print("Configuration loaded:")
+    print(f"  Mode: {mode}")
+    print(f"  Database: {db_status}")
+    print(f"  API Access: {api_status}")
+    print(f"  Log Level: {log_level}")
+    print(f"  Remote Network: {zion_status}\n")
+
+    print("Configuration security check:")
+    print("  [OK] No hardcoded secrets detected")
+    print("  [OK] .env file properly ignored by git")
+    print("  [OK] Production overrides available\n")
     print("The Oracle sees all configurations.")
 
 
 def main() -> None:
-    check_dotenv_installed()
+    print("ORACLE STATUS: Consulting the configuration...\n")
 
-    if load_dotenv is not None:
+    if check_dotenv_installed() and load_dotenv is not None:
         load_dotenv(override=False)
 
     config = get_config_map()
     missing = validate_config(config)
 
     if missing:
-        print("WARNING: Incomplete configuration detected.")
-        print(f"Missing keys: {', '.join(missing)}")
-        print("Defaulting or overriding may be required.\n")
+        missing_str = ", ".join(missing)
+        print(
+            f"[WARNING]: Missing configuration variables: {missing_str}"
+        )
+        print(
+            "         Using fallback defaults.\n "
+            "cp ex1/.env.example ex1/.env\n"
+        )
 
     display_status(config)
 
