@@ -1,6 +1,5 @@
 import sys
 import os
-import site
 
 
 def is_virtual_environment() -> bool:
@@ -21,10 +20,8 @@ def display_open_lab() -> None:
 
 
 def display_sealed_lab() -> None:
-    env_path:str = sys.prefix
-    env_name:str = os.path.basename(env_path)
-    site_packages: list[str] = site.getsitepackages()
-    reagent_path: str = site_packages[0]if site_packages else "Unknow"
+    env_path: str = sys.prefix
+    env_name: str = os.path.basename(env_path)
 
     print("\nLABORATORY STATUS: The laboratory is sealed\n")
     print(f"Current Python: {sys.executable}")
