@@ -18,7 +18,7 @@ REQUIRED_VARS: list[str] = [
 def check_dotenv_installed() -> bool:
     if load_dotenv is None:
         print("[WARNING]: 'python-dotenv' library is not installed.")
-        print("          Run: pip install -r ex1/requirements.txt\n")
+        print("           Run: pip install -r ex1/requirements.txt\n")
         return False
     return True
 
@@ -69,7 +69,7 @@ def display_status(config: dict[str, Optional[str]]) -> None:
 def main() -> None:
     print("ORACLE STATUS: Consulting the configuration...\n")
 
-    if check_dotenv_installed() and load_dotenv is not None:
+    if check_dotenv_installed():
         load_dotenv(override=False)
 
     config = get_config_map()
@@ -77,13 +77,9 @@ def main() -> None:
 
     if missing:
         missing_str = ", ".join(missing)
-        print(
-            f"[WARNING]: Missing configuration variables: {missing_str}"
-        )
-        print(
-            "         Using fallback defaults.\n "
-            "cp ex1/.env.example ex1/.env\n"
-        )
+        print(f"[WARNING]: Missing configuration variables: {missing_str}")
+        print("           Using fallback defaults.")
+        print("           cp ex1/.env.example ex1/.env")
 
     display_status(config)
 
