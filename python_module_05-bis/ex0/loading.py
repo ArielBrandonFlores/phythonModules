@@ -1,11 +1,10 @@
 import importlib
-import os
-import sys
+
 
 
 def check_reagent(name: str, description: str) -> bool:
     try:
-        module:str = importlib.import_module(name)
+        module = importlib.import_module(name)
         version:str = getattr(module, "__version__", "Unknown")
         print(f"[OK] {name} ({version}) - {description}")
         return True
