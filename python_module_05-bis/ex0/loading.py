@@ -17,9 +17,8 @@ def display_install_instructions() -> None:
     print("To stock the laboratory using pip, run:")
     print("  pip install -r ex0/requirements.txt\n")
     print("To stock the laboratory using Poetry, run:")
-    print("  poetry config virtualenvs.in-project true")
     print("  poetry install")
-    print("  poetry run python ex0/loading.py")
+    print("  poetry run python loading.py")
 
 
 def display_pip_vs_poetry() -> None:
