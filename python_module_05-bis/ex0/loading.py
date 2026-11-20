@@ -1,11 +1,10 @@
 import importlib
 
 
-
 def check_reagent(name: str, description: str) -> bool:
     try:
         module = importlib.import_module(name)
-        version:str = getattr(module, "__version__", "Unknown")
+        version: str = getattr(module, "__version__", "Unknown")
         print(f"[OK] {name} ({version}) - {description}")
         return True
     except ImportError:
@@ -25,8 +24,14 @@ def display_install_instructions() -> None:
 
 def display_pip_vs_poetry() -> None:
     print("\npip vs Poetry:")
-    print("  requirements.txt declares what to install; pip resolves it at install time.")
-    print("  pyproject.toml declares the same constraints, and Poetry pins the resolved")
+    print(
+        "  requirements.txt declares what to install;"
+        " pip resolves it at install time."
+        )
+    print(
+        "  pyproject.toml declares the same constraints,"
+        " and Poetry pins the resolved"
+        )
     print("  versions in poetry.lock so every install is identical.")
     print("\nAll reagents present and accounted for.")
 
@@ -53,7 +58,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-
-
