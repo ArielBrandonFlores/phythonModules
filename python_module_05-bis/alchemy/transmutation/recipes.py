@@ -1,5 +1,5 @@
 from elements import create_fire
-from alchemy.elements import create_air
+from ..elements import create_air
 from ..potions import strength_potion
 
 
